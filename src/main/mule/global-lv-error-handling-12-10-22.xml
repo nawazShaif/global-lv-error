@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ab285800-8495-449b-8c2e-89e8b8a82761" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<configuration doc:name="Configuration" doc:id="a8155fbf-62d3-44ef-b3e1-7b8a3e488474" defaultErrorHandler-ref="global.errorError_Handler" />
+	<flow name="global-lv-error-handling-12-10-22Flow" doc:id="a4d2025b-b2d9-4de1-aeab-313e4532024c" >
+		<http:listener doc:name="Listener" doc:id="d7cb7a64-6a09-49b5-9ab8-3f805ed1d962" config-ref="HTTP_Listener_config" path="/check"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2af5d87c-fbcc-4fef-a34d-f5b4b4a5f25f" />
+		<flow-ref doc:name="Flow Reference" doc:id="cb57f8b8-6923-4fd0-8df7-07c8930d3760" name="global-lv-error-handling-12-10-22Flow1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cc9ff159-a645-4dad-b85d-19c644d8319a" />
+	</flow>
+	<flow name="global-lv-error-handling-12-10-22Flow1" doc:id="e730dbee-bb5b-4145-873d-2262832dffec" >
+		<logger level="INFO" doc:name="Logger" doc:id="4ae9d683-ec8e-47ec-9016-a65da234fefb" />
+		<validation:is-null doc:id="6dcbf24e-3671-40b0-b686-e848470797d1" value="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2211923c-75b0-4ae4-a2cd-c67f3abdeb6f" />
+		<ee:transform doc:name="Transform Message" doc:id="b008d706-1712-49b3-83d0-3633ef7f95ec" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"descr": error.discription,
+	"errorType": error.errorType,
+	"correlation": correlationId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="5e67bba3-858c-4d38-a00f-baecf9f81311" />
+		<logger level="INFO" doc:name="Logger" doc:id="031b0ce1-d884-4cfc-8305-ba2d84d8dbde" />
+	</flow>
+</mule>

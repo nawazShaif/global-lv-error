@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>global-lv-error-hand-in-same-canvas</artifactId>
+	<artifactId>global-lv-error-handling-12-10-22</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>global-lv-error-hand-in-same-canvas</name>
+	<name>global-lv-error-handling-12-10-22</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
