@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="10567fae-c275-4491-8c36-c7a62b74ac25" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="global-lv-error-hand-in-same-canvasFlow" doc:id="edde7c21-aa95-45e1-b91d-232a8e2b85f7" >
+		<http:listener doc:name="Listener" doc:id="bfb1d59d-a0b1-4b4a-b237-9d459c876392" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="97152dbd-94ed-4660-a6d2-73e4c3b07813" />
+		<flow-ref doc:name="Flow Reference" doc:id="271607e1-3c47-419f-898d-8790a1138ab8" name="global-lv-error-hand-in-same-canvasFlow2"/>
+		<logger level="INFO" doc:name="Logger" doc:id="001bbead-dbfd-4fb1-972e-69cf4afb583b" />
+		<ee:transform doc:name="Transform Message" doc:id="08683ee9-71cf-4ab2-87ab-a3eedcb0dfd1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"desc": error.description,
+	"errorType": error.errorType,
+	"corr": correlationId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e72e7259-06f4-40cc-a3ea-f1fc2ec60ab1" />
+		<logger level="INFO" doc:name="Logger" doc:id="d5b4b467-e8ae-468d-bd68-75311dc5175a" />
+	</flow>
+	<flow name="global-lv-error-hand-in-same-canvasFlow2" doc:id="11fe65f9-5ebb-4945-82cb-f6d0a0489b41" >
+		<logger level="INFO" doc:name="Logger" doc:id="b21e0bb0-36f0-429f-8328-0ba9bb74fa50" />
+		<validation:is-null doc:id="43e10eac-a5bd-42bb-a276-9804e1dc1b39" value="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="092acacf-adec-4ea2-8ef5-075fc009020e" />
+	</flow>
+	<error-handler name="global-lv-error-hand-in-same-canvasError_Handler" doc:id="f7aa72b0-ea74-4e30-bb20-53f88f22498e" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="22ef165d-fb8d-45e9-8df3-fab058111943" >
+			<logger level="INFO" doc:name="Logger" doc:id="59d7e5df-8644-48a4-8199-bdaef8a8b630" />
+			<set-payload value="#[payload]" doc:name="Set Payload" doc:id="bc8aee1f-ebdc-49f7-bec6-1bb318526c23" />
+		</on-error-continue>
+	</error-handler>
+</mule>
