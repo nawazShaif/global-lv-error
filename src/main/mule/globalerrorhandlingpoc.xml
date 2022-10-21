@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cba88923-a3c6-460e-afe5-df73dc0728ea" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="globalerrorhandlingpocFlow1" doc:id="f0ccd77e-ae97-464d-8233-7d51d319a796" >
+		<logger level="INFO" doc:name="Logger" doc:id="95825240-1946-4705-be32-baf99d2af3dc" />
+		<validation:is-null doc:id="851dc848-a191-46d4-a077-060599cf6080" value="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="874ff0af-0121-40b0-9e72-1c7b7029bc05" />
+	</flow>
+	<flow name="globalerrorhandlingpocFlow" doc:id="3018df95-6bb3-48db-973b-4d221b7dddf4" >
+		<http:listener doc:name="Listener" doc:id="29535f13-fc31-4a0e-a030-c6a2740f129d" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3d5e3802-d05a-4305-a473-24b835c6d8e5" />
+		<flow-ref doc:name="Flow Reference" doc:id="8c533e79-8fcf-4527-bdfc-a661f0f507e5" name="globalerrorhandlingpocFlow1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="10a8c66a-738d-40a2-9c5e-c3f797b779e4" />
+		<ee:transform doc:name="Transform Message" doc:id="fce56473-1321-4912-8bc9-239a4537ab32" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"mule" ++ null]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="a0127281-4c03-4b0e-a32f-5a7388085bd4" />
+	</flow>
+</mule>
